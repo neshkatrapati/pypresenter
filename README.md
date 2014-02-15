@@ -12,7 +12,15 @@ $ git clone https://github.com/neshkatrapati/pypresenter.git
 $ cd pypresenter
 $ sudo python setup.py install
 ```
-
+or
+``` bash
+$ pip install pypresenter
+```
+or
+``` bash
+$ easy_install pypresenter
+```
+	
 ## Usage
 ``` bash
 $ pypresenter example.pypr
