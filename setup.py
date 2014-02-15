@@ -14,4 +14,5 @@ setup(name='pypresenter',
         'colorama',
         'termcolor',
       ],
+      scripts = ['bin/pypresenter'],
       zip_safe=False)
