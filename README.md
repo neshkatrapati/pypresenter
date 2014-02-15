@@ -5,6 +5,7 @@
 
 * It is a commandline presentation tool ( Allows you to present on terminal )
 * Inspired (to an extent derived) from [Prysenter](https://github.com/cnelsonsic/Prysenter)
+
 ## Install
 
 ``` bash
