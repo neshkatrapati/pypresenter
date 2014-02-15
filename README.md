@@ -57,13 +57,17 @@ $ pypresenter example.pypr
 
 * Text colors, styles and type writing animation
 ``` xml
-<slide>
-	<text>
-		<f style="bold" color="red"> Red Text is </f>
-		<typewriter> <f color="blue"> Awesome ! </f></typewriter>
-	</text>
+<slide center="true">
+	<center>
+		<text>
+			<f style="bold" color="red"> Red Text is </f>
+			<typewriter> <f color="blue"> Awesome ! </f></typewriter>
+		</text>
+	</center>
 </slide>
 ```
+![Screen 2](screen2.gif)
+
 * Use figlet 
 ``` xml
 <slide>
