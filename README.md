@@ -8,12 +8,14 @@
 ##Features
 
 ###XML format to write slides. 
-       
-       <slide>
-		<text>
-			Hello !
-		</text>
-       </slide>
+
+``` xml
+<slide>
+	<text>
+		Hello !
+	</text>
+</slide>
+```
 
 * Text colors, styles and type writing animation
 * Ascii image rendering using python-aalib
