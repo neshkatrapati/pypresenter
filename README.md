@@ -91,7 +91,8 @@ $ pypresenter example.pypr
 ``` xml
 <slide>
 	<command print="true">
-		ls -l 
+		cowsay "Hello"
 	</command>
 </slide>
 ```
+![Screen 5](images/screen5.png)
