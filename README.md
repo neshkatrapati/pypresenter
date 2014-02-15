@@ -25,7 +25,9 @@ $ easy_install pypresenter
 ## Usage
 ``` bash
 $ pypresenter example.pypr
+(Right Arrow, Left Arrow : Controls)
 ( Ctrl + C to exit )
+
 ```
 
 ##Features
