@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='pypresenter',
-      version='0.1',
+      version='0.2',
       description='Presentations from the CommandLine',
       long_description = readme(),
       keywords = 'presentation shell commandline',

@@ -32,12 +32,28 @@ $ pypresenter example.pypr
 ###XML format to write slides. 
 
 ``` xml
+<presentation>
 <slide>
 	<text>
 		Hello !
 	</text>
 </slide>
+</presentation>
 ```
+
+* Slide center & Text center
+
+``` xml
+<slide center="true">
+       <center>
+		<text>
+			Hello !
+		</text>
+	</center>
+</slide>
+```
+
+![Screen 1](images/screen1.png)
 
 * Text colors, styles and type writing animation
 ``` xml
