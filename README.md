@@ -7,13 +7,16 @@
 
 ## Install
 
-	$ git clone https://github.com/neshkatrapati/pypresenter.git
-	$ cd pypresenter
-	$ sudo python setup.py install
+``` shell
+$  git clone https://github.com/neshkatrapati/pypresenter.git
+$ cd pypresenter
+$ sudo python setup.py install
+```
 ## Usage
-   
-	$ pypresenter example.pypr
-	( Ctrl + C to exit )
+``` shell   
+$ pypresenter example.pypr
+( Ctrl + C to exit )
+```
 ##Features
 
 ###XML format to write slides. 
