@@ -66,7 +66,7 @@ $ pypresenter example.pypr
 	</center>
 </slide>
 ```
-![Screen 2](screen2.gif)
+![Screen 2](images/screen2.gif)
 
 * Use figlet 
 ``` xml
