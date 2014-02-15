@@ -1,0 +1,72 @@
+<presentation>
+<slide center="true">
+	<h font="starwars" fg="red" bg="white" style="bold">
+		 Welcome !
+	</h>
+</slide>
+<slide>
+	<center>
+		<text><f style="bold"> Command Line Presentations with PyPresenter ! </f></text>
+	</center>
+</slide>
+
+
+<slide>
+	<center leftalign="true">
+	<text> 
+	<format color="white" style="bold">
+Write like </format><f color="red">  this ! </f>
+		</text>
+	</center>
+</slide>
+
+
+<slide>
+	<center leftalign='true'>
+		<typewriter>
+What is this ?
+     -> Present from the terminal !
+     -> Write XML presentations which get presented
+     -> Colors + Bold style + Figlet + Typewriter Effect
+     -> Written in Python !
+	</typewriter>
+	</center>
+</slide>
+
+
+
+
+
+<slide center="true">
+	<center>
+		<text>Try some os commands !</text>
+		<command print="true">
+				 ls -l \$
+		</command>
+	</center>
+</slide>
+<slide center="true">
+	<text>
+		This is plain text. \$
+	</text>
+	<t>
+		<center> 
+			 <typewriter> <f color="white" style="bold"> White Color, Bold, Center and Typewriter </f> </typewriter> 
+		</center>
+	</t>
+</slide>
+<slide>
+	<text> Supports Images !! </text>
+	<image width="80" height="30"> Gnulinux.png </image>
+	<text> <f color="red" style="bold"> Gnu/Linux ! The Dynamic Duo !! </f></text>
+</slide>
+<slide>
+	<center>
+	<text>
+		The End. 
+Happy Hacking !!
+Contact : ganesh@swecha.net
+ 	</text>
+	</center>
+</slide>
+</presentation>

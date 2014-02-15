@@ -1,0 +1,254 @@
+
+import os
+import sys
+import termios
+import contextlib
+import time 
+import re
+from colorama import init
+init(strip=not sys.stdout.isatty()) # strip colors if stdout is redirected
+from termcolor import cprint 
+from pyfiglet import figlet_format, Figlet
+import copy
+
+import aalib
+import Image
+import urllib2
+from cStringIO import StringIO
+
+
+NEXT_SLIDE = '\x1b[C'
+PREVIOUS_SLIDE = '\x1b[D'
+QUIT = chr(4)
+spacer = re.compile("\s+")
+
+class Slide(object):
+    def __init__(self,text,args = {}):
+        self.text = text
+        self.args = args
+        
+
+class SlideDeck(object):
+    
+    def __init__(self,slides):
+        self.slides = slides
+        self.count = 0
+
+    @contextlib.contextmanager
+    def raw_mode(self,file):
+        old_attrs = termios.tcgetattr(file.fileno())
+        new_attrs = old_attrs[:]
+        new_attrs[3] = new_attrs[3] & ~(termios.ECHO | termios.ICANON)
+        try:
+            termios.tcsetattr(file.fileno(), termios.TCSADRAIN, new_attrs)
+            yield
+        finally:
+            termios.tcsetattr(file.fileno(), termios.TCSADRAIN, old_attrs)
+
+    
+    @staticmethod
+    def from_file(filename):
+        with open(filename,"r") as f:
+            text = f.read()
+            slides = SlideDeck.parse_slides(text)
+            return SlideDeck(slides)
+    
+    @staticmethod
+    def add_slide(buf,flags):
+        slide = Slide("\n".join(buf), copy.deepcopy(flags))
+        return slide
+    @staticmethod
+    def parse_slides(text = None):
+        lines = text.split("\n")
+        specials = ["--newslide", "--center", "--heading", "--image"]
+        buf = []
+        slides = []
+        flags = {"center" : True, "heading" : None, "image" : None}
+        for line in lines:
+            line = line.strip("\n ")
+            line_comps = spacer.split(line)
+            if line not in specials and (line_comps[0] not in specials):
+                buf.append(line)
+            elif line == "--center":
+                flags["center"] = True
+            elif line_comps[0] == "--heading":                
+                h_comps = line_comps[1:]
+                flags["heading"] = {}
+                flags["heading"]["fontname"] = h_comps[0] if len(h_comps) > 0 else "starwars"
+                flags["heading"]["background"] = h_comps[1] if len(h_comps) > 1 else "yellow"
+                flags["heading"]["foreground"] = h_comps[2] if len(h_comps) > 2 else "red"
+                flags["heading"]["options"] = h_comps[3].split(",") if len(h_comps) > 3 else []
+                flags["heading"]["width"] = int(h_comps[4]) if len(h_comps) > 4 else 80
+            elif line_comps[0] == "--image":
+                i_comps = line_comps[1:]
+                flags["image"] = {}
+                flags["image"]["width"] = int(i_comps[0])
+                flags["image"]["height"] = int(i_comps[1])
+                flags["image"]["image"] = i_comps[2]
+                
+                
+            elif line == "--newslide":
+                if len(buf) > 0:
+                   slide = SlideDeck.add_slide(buf,flags)
+                   slides.append(slide)
+                   flags["center"] = False
+                   flags["heading"] = None
+                   flags["image"] = None
+                   buf = []
+                  
+        slide = SlideDeck.add_slide(buf,flags)
+        slides.append(slide)
+        return slides
+        
+
+    @staticmethod
+    def print_heading(text, fontname, background, foreground, options = [], width = 80):
+        fig  = Figlet(fontname, justify = "right", width = 5)
+#        fig.renderText(text)
+        cprint(fig.renderText(text), background, foreground, attrs=options)
+
+    @staticmethod
+    def format_print(text,  foreground, options=[]):
+        cprint(text,  foreground, attrs= options, end='')
+
+    @staticmethod
+    def clear():
+        '''Clears the screen. Should work everywhere.'''
+        os.system('cls' if os.name=='nt' else 'clear')
+    
+    @staticmethod
+    def get_term_size():
+        '''Gets the size of your terminal. May not work everywhere. YMMV.'''
+        rows, columns = os.popen('stty size', 'r').read().split()
+        return int(rows), int(columns)
+
+    @staticmethod
+    def center(string, width):
+        '''Center all lines of a string horizontally.'''
+#        if colors.HAS_COLORS:
+#            return colors.center(string, width)
+#        else:
+#        return  '\n'.join((line.center(width) for line in string.split("\n")))
+        return  '\n'.join(((" "*(width/3)) + line for line in string.split("\n")))
+    @staticmethod
+    def render_image(width,height,image_path):
+        screen = aalib.AsciiScreen(width=width, height=height)
+        fp = StringIO(open(image_path).read())
+        image = Image.open(fp).convert('L').resize(screen.virtual_size)
+        screen.put_image((0, 0), image)
+        print screen.render()
+
+    def present_slide(self,slide = None):
+        ''' Presents Individual Slide ''' 
+        SlideDeck.clear()
+
+        text  =  slide.text
+        duration_between_key = 0.1
+        
+        rows, cols = SlideDeck.get_term_size()
+        
+        # How many rows tall is the slide?
+        slide_height = len(slide.text.split("\n"))
+
+        # Determine our top margin,
+        # subtracting the slide height if it's more than one line
+        top_margin = (rows-(slide_height if slide_height > 1 else 0))/2
+
+        # Print newlines to bump the slide text downward enough
+        # Remember that print adds a new line, hence -1.
+        if slide.args['center'] == True:
+            text = SlideDeck.center(text, cols)
+            if slide.args['heading'] != None:
+                top_margin = (rows - 20)
+                
+            print "\n"*(top_margin-1)
+        
+
+        if slide.args['image'] != None:
+            SlideDeck.render_image(slide.args["image"]["width"],
+                                   slide.args["image"]["height"],
+                                   slide.args["image"]["image"])
+            
+
+
+        if slide.args['heading'] != None:
+            
+            SlideDeck.print_heading(slide.text,slide.args['heading']["fontname"],
+                                    slide.args['heading']["background"],
+                                    slide.args['heading']["foreground"],
+                                    slide.args['heading']["options"],
+                                    slide.args['heading']["width"])
+        
+        else:
+            stack = False
+            ftype = ""
+            ftype_okay = False
+            colors = ["blue","grey","red","white","green","yellow"]
+            styles = ["bold","blink","underline"]
+
+            
+            for c in text:
+                if c == "{":
+                    stack = True
+                elif c == "}":
+                    stack = False
+                    ftype = ""
+                    ftype_okay = False
+                elif stack == True and ftype_okay == False:
+                    if c.isspace():
+                        ftype_okay = True
+                    else:
+                        ftype += c
+                elif stack == True and ftype == "t":
+                    sys.stdout.write(c)
+                    sys.stdout.flush()
+                    if not c.isspace():
+                        time.sleep(duration_between_key)
+                elif stack == True and ftype_okay:
+                    ftype_comps = ftype.split("_")
+                    style = []
+                    
+                    if len(ftype_comps) > 1:
+                        color = ftype_comps[0] if ftype_comps[0] in colors else ftype_comps[1]
+                        style = ftype_comps[1] if ftype_comps[1] in styles else ftype_comps[0]
+                        style = style.split("_") if '_' in style else [style]
+                    else: 
+                        color = ftype
+#                    print c, color, style    
+                    SlideDeck.format_print(c,color,style)
+                else:
+                    sys.stdout.write(c)
+
+                
+            sys.stdout.write('\n')
+
+    def present(self):
+        SlideDeck.clear()
+        self.present_slide(self.slides[self.count])
+
+        with self.raw_mode(sys.stdin):
+            try:
+                while True:
+                    ch = sys.stdin.read(3)
+                    if not ch or ch == QUIT:
+                        break
+                    if ch == NEXT_SLIDE:
+                        if self.count + 1 <= (len(self.slides) - 1):
+                            self.present_slide(self.slides[self.count+1])
+                            self.count += 1
+                        else:
+                            self.present_slide(Slide(text = "You have reached the end. Press ^C to Exit", 
+                                                     args = {"center": True, "heading": None, "image": None}))
+                    elif ch == PREVIOUS_SLIDE:
+                        if self.count - 1 >= 0:
+                            self.present_slide(self.slides[self.count  - 1])
+                            self.count -= 1
+            except (KeyboardInterrupt, EOFError):
+                pass
+
+
+if __name__ == "__main__":
+    s = SlideDeck.from_file(sys.argv[1])
+#    for sl in s.slides:
+#        print sl.args
+    s.present()
