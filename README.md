@@ -18,5 +18,35 @@
 ```
 
 * Text colors, styles and type writing animation
+``` xml
+<slide>
+	<text>
+		<f style="bold" color="red"> Red Text is </f>
+		<typewriter> <f color="blue"> Awesome ! </f></typewriter>
+	</text>
+</slide>
+```
+* Use figlet 
+``` xml
+<slide>
+	<heading font="starwars" fg="red" bg="white">
+		 Welcome !
+	</heading>
+</slide>
+```
+
 * Ascii image rendering using python-aalib
+``` xml
+<slide>
+	<image width="20" height="20"> image.jpg </image>
+</slide>
+```
+
 * Use os commands in side the slides
+``` xml
+<slide>
+	<command print="true">
+		ls -l 
+	</command>
+</slide>
+```

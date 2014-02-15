@@ -15,7 +15,7 @@
 	<center leftalign="true">
 	<text> 
 	<format color="white" style="bold">
-Write like </format><f color="red">  this ! </f>
+Write like </format><typewriter><f color="red">  this ! </f></typewriter>
 		</text>
 	</center>
 </slide>
