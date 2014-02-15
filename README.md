@@ -77,6 +77,8 @@ $ pypresenter example.pypr
 </slide>
 ```
 
+![Screen 3](images/screen3.png)
+
 * Ascii image rendering using python-aalib
 ``` xml
 <slide>
