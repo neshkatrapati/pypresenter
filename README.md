@@ -85,6 +85,7 @@ $ pypresenter example.pypr
 	<image width="20" height="20"> image.jpg </image>
 </slide>
 ```
+![Screen 4](images/screen4.png)
 
 * Use os commands in side the slides
 ``` xml
